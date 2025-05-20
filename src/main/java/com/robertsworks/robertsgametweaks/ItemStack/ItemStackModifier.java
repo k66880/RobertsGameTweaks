@@ -8,6 +8,7 @@ package com.robertsworks.robertsgametweaks.ItemStack;
 import com.robertsworks.robertsgametweaks.RobertsGameTweaksMod;
 import com.robertsworks.robertsgametweaks.Config.ModConfigCore;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.BannerItem;
 import net.minecraft.world.item.BedItem;
 import net.minecraft.world.item.BoatItem;
@@ -15,17 +16,19 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.MinecartItem;
 import net.minecraft.world.item.SaddleItem;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.event.GatherComponentsEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber(modid = RobertsGameTweaksMod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ItemStackModifier {
-    /** 初始化 */
-    public static void init() {
-        ForgeRegistries.ITEMS.getValues().forEach(item -> {
-            var size = getMaxStackSize(item);
-            if (size != -1)
-                setMaxStackSize(item, size);
-        });
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onItem(GatherComponentsEvent.Item itemEvent) {
+        Item item = itemEvent.getOwner();
+        var size = getMaxStackSize(item);
+        if (size != -1)
+            setMaxStackSize(itemEvent, size);
     }
 
     private static int getMaxStackSize(Item item) {
@@ -48,7 +51,7 @@ public class ItemStackModifier {
             // 附魔书
             if (item == Items.ENCHANTED_BOOK) return 16;
         }
-        
+
         if (ModConfigCore.increaseMaxStackSizeForPotions) {
             // 药水
             if (item == Items.POTION) return 16;
@@ -72,16 +75,7 @@ public class ItemStackModifier {
         return -1;
     }
 
-    private static void setMaxStackSize(Item item, int size) {
-        try {
-            // Field field = Item.class.getDeclaredField("maxStackSize");
-            // field.setAccessible(true);
-            // field.set(item, size);
-
-            ObfuscationReflectionHelper.setPrivateValue(Item.class, item, size, "f_41370_");
-        }
-        catch (Exception e) {
-            RobertsGameTweaksMod.LOGGER.error("Could not change the max stack-size of " +  ForgeRegistries.ITEMS.getKey(item) + ", exception: " + e);
-        }
+    private static void setMaxStackSize(GatherComponentsEvent.Item itemEvent, int size) {
+        itemEvent.register(DataComponents.MAX_STACK_SIZE, size);
     }
 }

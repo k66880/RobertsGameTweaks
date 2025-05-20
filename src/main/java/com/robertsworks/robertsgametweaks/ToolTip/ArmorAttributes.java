@@ -2,20 +2,13 @@
  * Copyright (c) 2025 Robert Wu
  * 
  * MIT License
- */
-package com.robertsworks.robertsgametweaks.ToolTip;
+ */package com.robertsworks.robertsgametweaks.ToolTip;
 
 import java.text.DecimalFormat;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public class ArmorAttributes {
     private static final DecimalFormat df = new DecimalFormat("#.##");
@@ -43,34 +36,39 @@ public class ArmorAttributes {
     public static ArmorAttributes LoadFromItemStack(ItemStack stack) {
         ArmorAttributes res = new ArmorAttributes();
         
-        if (stack.getItem() instanceof ArmorItem armorItem) {
-            ArmorMaterial material = armorItem.getMaterial();
-            ArmorItem.Type type = armorItem.getType();
-            
-            res.hasArmor = true;
-            res.armor = material.getDefenseForType(type);
-            
-            res.hasArmorToughness = true;
-            res.armorToughness = material.getToughness();
-            
-            Multimap<Attribute, AttributeModifier> attributes = stack.getAttributeModifiers(armorItem.getEquipmentSlot());
-            if (attributes.containsKey(Attributes.KNOCKBACK_RESISTANCE)) {
+        var modifiers = stack.getDefaultAttributeModifiers().modifiers();
+        for (ItemAttributeModifiers.Entry entry : modifiers) {
+            var holder = entry.attribute();
+            var attr = entry.modifier();
+            if (holder.equals(Attributes.ARMOR)) {
+                res.hasArmor = true;
+                res.armor = attr.amount();
+            }
+            else if (holder.equals(Attributes.ARMOR_TOUGHNESS)) {
+                res.hasArmorToughness = true;
+                res.armorToughness = attr.amount();
+            }
+            else if (holder.equals(Attributes.KNOCKBACK_RESISTANCE)) {
                 res.hasKnockbackResistance = true;
-                res.knockbackResistance = getAttributeValue(attributes, Attributes.KNOCKBACK_RESISTANCE);
+                res.knockbackResistance = attr.amount();
             }
         }
 
-        if (stack.getItem() instanceof HorseArmorItem horseArmorItem) {
-            res.hasArmor = true;
-            res.armor = horseArmorItem.getProtection();
-        }
+        // stack.getDefaultAttributeModifiers().forEach(EquipmentSlot., (holder, attr) -> {
+        //     if (holder.equals(Attributes.ARMOR)) {
+        //         res.hasArmor = true;
+        //         res.armor = attr.amount();
+        //     }
+        //     else if (holder.equals(Attributes.ARMOR_TOUGHNESS)) {
+        //         res.hasArmorToughness = true;
+        //         res.armorToughness = attr.amount();
+        //     }
+        //     else if (holder.equals(Attributes.KNOCKBACK_RESISTANCE)) {
+        //         res.hasKnockbackResistance = true;
+        //         res.knockbackResistance = attr.amount();
+        //     }
+        // });
 
         return res;
-    }
-
-    private static double getAttributeValue(Multimap<Attribute, AttributeModifier> attributes, Attribute attribute) {
-        return attributes.get(attribute).stream()
-                .mapToDouble(AttributeModifier::getAmount)
-                .sum();
     }
 }

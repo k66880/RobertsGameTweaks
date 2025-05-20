@@ -5,6 +5,7 @@
  */
 package com.robertsworks.robertsgametweaks.util;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -53,14 +54,14 @@ public class RGTHelper {
     }
 
     /** 获取指定的物品的食物属性 */
-    @SuppressWarnings("deprecation")
     public static FoodProperties getFoodProperties(Item item) {
-        return item.getFoodProperties();
+        return item.components().get(DataComponents.FOOD);
     }
 
     /** 判断指定的物品堆栈是否不可破坏 */
     public static boolean isUnbreakable(ItemStack stack) {
         if (!stack.isDamageableItem()) return true;
-        return stack.getTag() != null && stack.getTag().getBoolean("Unbreakable");
+        Item item = stack.getItem();
+        return item.components().get(DataComponents.UNBREAKABLE) != null;
     }
 }

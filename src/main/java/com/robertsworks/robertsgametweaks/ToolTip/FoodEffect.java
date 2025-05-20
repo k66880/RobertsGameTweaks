@@ -2,16 +2,15 @@
  * Copyright (c) 2025 Robert Wu
  * 
  * MIT License
- */
-package com.robertsworks.robertsgametweaks.ToolTip;
+ */package com.robertsworks.robertsgametweaks.ToolTip;
 
-import com.mojang.datafixers.util.Pair;
 import com.robertsworks.robertsgametweaks.util.RGTHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.food.FoodProperties.PossibleEffect;
 
 public class FoodEffect {
     /** 效果名称的多语言键名 */
@@ -39,13 +38,13 @@ public class FoodEffect {
         return String.format("%d%%", percentage);
     }
 
-    public static FoodEffect LoadFromPossibleEffect(Pair<MobEffectInstance, Float> possibleEffect) {
+    public static FoodEffect LoadFromPossibleEffect(PossibleEffect possibleEffect) {
         FoodEffect res = new FoodEffect();
-        MobEffectInstance effect = possibleEffect.getFirst();
+        MobEffectInstance effect = possibleEffect.effect();
         res.descriptionId = effect.getDescriptionId();
         res.amplifier = effect.getAmplifier() + 1;
         res.duration = effect.getDuration();
-        res.probability = possibleEffect.getSecond();
+        res.probability = possibleEffect.probability();
         return res;
     }
 }

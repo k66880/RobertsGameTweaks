@@ -9,8 +9,6 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 import com.robertsworks.robertsgametweaks.Config.ModConfigCore;
-import com.robertsworks.robertsgametweaks.ItemStack.ItemStackModifier;
-
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -33,8 +31,6 @@ public class RobertsGameTweaksMod {
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            ItemStackModifier.init();
-        });
+        
     }
 }

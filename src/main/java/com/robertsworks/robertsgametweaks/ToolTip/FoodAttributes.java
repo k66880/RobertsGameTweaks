@@ -2,18 +2,16 @@
  * Copyright (c) 2025 Robert Wu
  * 
  * MIT License
- */
-package com.robertsworks.robertsgametweaks.ToolTip;
+ */package com.robertsworks.robertsgametweaks.ToolTip;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mojang.datafixers.util.Pair;
 import com.robertsworks.robertsgametweaks.util.RGTHelper;
 
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.food.FoodProperties.PossibleEffect;
 import net.minecraft.world.item.ItemStack;
 
 public class FoodAttributes {
@@ -44,13 +42,13 @@ public class FoodAttributes {
             res.hasFoodProperties = true;
 
             // 恢复饥饿值
-            res.hunger = foodProperties.getNutrition();
+            res.hunger = foodProperties.nutrition();
 
             // 恢复饱和度
-            res.saturation = foodProperties.getSaturationModifier();
-
+            res.saturation = foodProperties.saturation();
+            
             // 附带效果
-            for (Pair<MobEffectInstance, Float> possibleEffect : foodProperties.getEffects()) {
+            for (PossibleEffect possibleEffect : foodProperties.effects()) {
                 FoodEffect foodEffect = FoodEffect.LoadFromPossibleEffect(possibleEffect);
                 res.effects.add(foodEffect);
             }
