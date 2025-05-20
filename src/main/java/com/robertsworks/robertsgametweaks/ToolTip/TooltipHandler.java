@@ -105,7 +105,7 @@ public class TooltipHandler {
 
     // 添加攻击信息
     private static void addAttackInfo(ItemStack stack, List<Component> lines) {
-        if (!ModConfigCore.showTooltipsForTools) return;
+        if (!ModConfigCore.showTooltipsForWeapons) return;
 
         AttackAttributes attackAttributes = AttackAttributes.LoadFromItemStack(stack);
         if (attackAttributes.hasMainHandDamage)

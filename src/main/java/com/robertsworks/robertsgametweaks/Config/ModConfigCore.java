@@ -44,9 +44,9 @@ public class ModConfigCore
         .comment("Whether to show the durability info")
         .define("showDurability", true);
 
-    private static final ForgeConfigSpec.BooleanValue SHOW_TOOLTIPS_FOR_TOOLS = BUILDER
-        .comment("Whether to show the tooltips for tools")
-        .define("showTooltipsForTools", true);
+    private static final ForgeConfigSpec.BooleanValue SHOW_TOOLTIPS_FOR_WEAPONS = BUILDER
+        .comment("Whether to show the tooltips for weapons")
+        .define("showTooltipsForWeapons", true);
 
     private static final ForgeConfigSpec.BooleanValue SHOW_TOOLTIPS_FOR_ARMORS = BUILDER
         .comment("Whether to show the tooltips for armors")
@@ -83,8 +83,8 @@ public class ModConfigCore
     /** 是否显示耐久度信息 */
     public static boolean showDurability;
 
-    /** 是否显示武器或工具的属性信息 */
-    public static boolean showTooltipsForTools;
+    /** 是否显示武器的属性信息 */
+    public static boolean showTooltipsForWeapons;
 
     /** 是否显示防具的属性信息 */
     public static boolean showTooltipsForArmors;
@@ -108,7 +108,7 @@ public class ModConfigCore
         increaseMaxStackSizeForOthers = INCREASE_MAX_STACK_SIZE_TO_16_FOR_OTHERS.get();
 
         showDurability = SHOW_DURABILITY.get();
-        showTooltipsForTools = SHOW_TOOLTIPS_FOR_TOOLS.get();
+        showTooltipsForWeapons = SHOW_TOOLTIPS_FOR_WEAPONS.get();
         showTooltipsForArmors = SHOW_TOOLTIPS_FOR_ARMORS.get();
         showTooltipsForFoods = SHOW_TOOLTIPS_FOR_FOODS.get();
         removeVanillaTooltips = REMOVE_VANILLA_TOOLTIPS.get();
