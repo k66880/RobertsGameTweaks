@@ -7,11 +7,6 @@ package com.robertsworks.robertsgametweaks.ToolTip;
 
 import java.text.DecimalFormat;
 
-import com.google.common.collect.Multimap;
-
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.HorseArmorItem;
@@ -45,19 +40,16 @@ public class ArmorAttributes {
         
         if (stack.getItem() instanceof ArmorItem armorItem) {
             ArmorMaterial material = armorItem.getMaterial();
-            ArmorItem.Type type = armorItem.getType();
+            var slot = armorItem.getSlot();
             
             res.hasArmor = true;
-            res.armor = material.getDefenseForType(type);
+            res.armor = material.getDefenseForSlot(slot);
             
             res.hasArmorToughness = true;
             res.armorToughness = material.getToughness();
             
-            Multimap<Attribute, AttributeModifier> attributes = stack.getAttributeModifiers(armorItem.getEquipmentSlot());
-            if (attributes.containsKey(Attributes.KNOCKBACK_RESISTANCE)) {
-                res.hasKnockbackResistance = true;
-                res.knockbackResistance = getAttributeValue(attributes, Attributes.KNOCKBACK_RESISTANCE);
-            }
+            res.knockbackResistance = material.getKnockbackResistance();
+            res.hasKnockbackResistance = res.knockbackResistance > 0;
         }
 
         if (stack.getItem() instanceof HorseArmorItem horseArmorItem) {
@@ -66,11 +58,5 @@ public class ArmorAttributes {
         }
 
         return res;
-    }
-
-    private static double getAttributeValue(Multimap<Attribute, AttributeModifier> attributes, Attribute attribute) {
-        return attributes.get(attribute).stream()
-                .mapToDouble(AttributeModifier::getAmount)
-                .sum();
     }
 }

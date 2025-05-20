@@ -35,6 +35,8 @@ public class SingleItemSlot extends Slot {
     @Override
     public void set(ItemStack stack) {
         // 确保放入的堆叠数量不超过1
-        super.set(stack.copyWithCount(1));
+        var newStack = stack.copy();
+        newStack.setCount(1);
+        super.set(newStack);
     }
 }
