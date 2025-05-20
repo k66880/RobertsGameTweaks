@@ -83,7 +83,7 @@ public class ModConfigCore
     /** 是否显示耐久度信息 */
     public static boolean showDurability;
 
-    /** 是否显示武器或工具的属性信息 */
+    /** 是否显示武器的属性信息 */
     public static boolean showTooltipsForWeapons;
 
     /** 是否显示防具的属性信息 */
