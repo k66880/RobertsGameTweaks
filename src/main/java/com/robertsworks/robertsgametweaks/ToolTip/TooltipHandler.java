@@ -143,7 +143,7 @@ public class TooltipHandler {
         FoodAttributes foodAttributes = FoodAttributes.LoadFromItemStack(stack);
         if (foodAttributes.hasFoodProperties) {
             lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_hunger", foodAttributes.formatHunger()));
-            lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_hunger", foodAttributes.formatSaturation()));
+            lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_saturation", foodAttributes.formatSaturation()));
             for (FoodEffect effect : foodAttributes.effects)
                 lines.add(effect.makeLine());
         }
