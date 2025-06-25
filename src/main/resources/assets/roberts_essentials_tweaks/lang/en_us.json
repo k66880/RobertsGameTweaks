@@ -1,5 +1,8 @@
 {
     "tooltip.roberts_game_tweaks.durability": "Durability: ",
+    "tooltip.roberts_game_tweaks.symbol_full": "█",
+    "tooltip.roberts_game_tweaks.symbol_half": "▒",
+    "tooltip.roberts_game_tweaks.symbol_empty": "▒",
     "tooltip.roberts_game_tweaks.unbreakable": "Unbreakable ",
     "tooltip.roberts_game_tweaks.attack": "Attack Damage: ",
     "tooltip.roberts_game_tweaks.attack_speed": "Attack Speed: ",

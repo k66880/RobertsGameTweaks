@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.robertsworks.robertsgametweaks.RobertsGameTweaksMod;
 import com.robertsworks.robertsgametweaks.Config.ModConfigCore;
+import com.robertsworks.robertsgametweaks.util.DurabilityTooltipType;
 import com.robertsworks.robertsgametweaks.util.RGTHelper;
 
 import net.minecraftforge.api.distmarker.Dist;
@@ -90,16 +91,56 @@ public class TooltipHandler {
             else {
                 MutableComponent value = Component.empty();
                 int rest = max - stack.getDamageValue();
-                if (rest == max)
-                    value.append(Component.literal(Integer.toString(rest)).withStyle(ChatFormatting.GREEN));
-                else if (rest <= 10 && max > 10)
-                    value.append(Component.literal(Integer.toString(rest)).withStyle(ChatFormatting.RED));
-                else
-                    value.append(Component.literal(Integer.toString(rest)).withStyle(ChatFormatting.WHITE));
-                value.append(Component.literal("/" + Integer.toString(max)).withStyle(ChatFormatting.WHITE));
-
+                DurabilityTooltipType durabilityTooltipType = ModConfigCore.durabilityTooltipType;
+                switch (durabilityTooltipType) {
+                    case Symbol5:
+                        addDurabilityInfoForSymbol(value, max, rest, 5);
+                        break;
+                    case Symbol10:
+                        addDurabilityInfoForSymbol(value, max, rest, 10);
+                        break;
+                    default:
+                        addDurabilityInfoForNumber(value, max, rest);
+                        break;
+                }
                 lines.add(makeAttributeLine(AttributeType.DURABILITY, "tooltip.roberts_game_tweaks.durability", value));
             }
+        }
+    }
+
+    private static void addDurabilityInfoForNumber(MutableComponent value, int max, int rest) {
+        if (rest == max)
+            value.append(Component.literal(Integer.toString(rest)).withStyle(ChatFormatting.GREEN));
+        else if (rest <= 10 && max > 10)
+            value.append(Component.literal(Integer.toString(rest)).withStyle(ChatFormatting.RED));
+        else
+            value.append(Component.literal(Integer.toString(rest)).withStyle(ChatFormatting.WHITE));
+        value.append(Component.literal("/" + Integer.toString(max)).withStyle(ChatFormatting.WHITE));
+    }
+
+    private static void addDurabilityInfoForSymbol(MutableComponent value, float max, float rest, int symbolCount) {
+        ChatFormatting color;
+        if (rest == max)
+            color = ChatFormatting.GREEN;
+        else if (rest <= 10 && max > 10)
+            color = ChatFormatting.RED;
+        else
+            color = ChatFormatting.WHITE;
+
+        float _value = rest * symbolCount / max;
+        int _symbolCount = 0;
+        while (_value >= 1) {
+            value.append(Component.translatable("tooltip.roberts_game_tweaks.symbol_full").withStyle(color));
+            _symbolCount++;
+            _value -= 1;
+        }
+        if (_value > 0) {
+            value.append(Component.translatable("tooltip.roberts_game_tweaks.symbol_half").withStyle(color));
+            _symbolCount++;
+        }
+        while (_symbolCount < symbolCount) {
+            value.append(Component.translatable("tooltip.roberts_game_tweaks.symbol_empty").withStyle(color));
+            _symbolCount++;
         }
     }
 
