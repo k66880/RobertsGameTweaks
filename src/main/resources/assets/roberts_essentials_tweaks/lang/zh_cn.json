@@ -1,5 +1,8 @@
 {
     "tooltip.roberts_game_tweaks.durability": "耐久: ",
+    "tooltip.roberts_game_tweaks.symbol_full": "█",
+    "tooltip.roberts_game_tweaks.symbol_half": "▒",
+    "tooltip.roberts_game_tweaks.symbol_empty": "▒",
     "tooltip.roberts_game_tweaks.unbreakable": "无法破坏 ",
     "tooltip.roberts_game_tweaks.attack": "攻击伤害: ",
     "tooltip.roberts_game_tweaks.attack_speed": "攻击速度: ",

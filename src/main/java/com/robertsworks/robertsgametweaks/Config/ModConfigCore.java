@@ -10,6 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import com.robertsworks.robertsgametweaks.RobertsGameTweaksMod;
+import com.robertsworks.robertsgametweaks.util.DurabilityTooltipType;
 
 @Mod.EventBusSubscriber(modid = RobertsGameTweaksMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModConfigCore
@@ -23,6 +24,10 @@ public class ModConfigCore
     private static final ForgeConfigSpec.BooleanValue COULD_HAVE_FOOD_WHEN_FULL = BUILDER
         .comment("Whether to enable \"player still could have food when full\"")
         .define("couldHaveFoodWhenFull", true);
+
+    private static final ForgeConfigSpec.BooleanValue ENABLE_AUTO_REFILL = BUILDER
+        .comment("Whether to enable \"refill the item after used or placed\"")
+        .define("enableAutoRefill", true);
 
     private static final ForgeConfigSpec.BooleanValue INCREASE_MAX_STACK_SIZE_TO_64 = BUILDER
         .comment("Whether to enable \"increase the max stack size to 64 for snowball, egg, ender pearl, honey bottle, banners and armor stand\"")
@@ -43,6 +48,10 @@ public class ModConfigCore
     private static final ForgeConfigSpec.BooleanValue SHOW_DURABILITY = BUILDER
         .comment("Whether to show the durability info")
         .define("showDurability", true);
+
+    private static final ForgeConfigSpec.EnumValue<DurabilityTooltipType> DURABILITY_TOOLTIP_TYPE = BUILDER
+        .comment("The display type of durability info")
+        .defineEnum("durabilityTooltipType", DurabilityTooltipType.Number);
 
     private static final ForgeConfigSpec.BooleanValue SHOW_TOOLTIPS_FOR_WEAPONS = BUILDER
         .comment("Whether to show the tooltips for weapons")
@@ -68,6 +77,9 @@ public class ModConfigCore
     /** 是否启用“玩家在吃饱的状态下可以继续吃” */
     public static boolean couldHaveFoodWhenFull;
 
+    /** 是否启用“当手持物品被使用或放置后若背包存在同物品则自动填充” */
+    public static boolean enableAutoRefill;
+
     /** 是否启用“增加雪球、鸡蛋、末影珍珠、蜂蜜瓶、旗帜、盔甲架堆叠上限至64” */
     public static boolean increaseMaxStackSizeTo64;
 
@@ -82,6 +94,9 @@ public class ModConfigCore
 
     /** 是否显示耐久度信息 */
     public static boolean showDurability;
+
+    /** （当showDurability启用时）耐久度信息的展示方式 */
+    public static DurabilityTooltipType durabilityTooltipType;
 
     /** 是否显示武器的属性信息 */
     public static boolean showTooltipsForWeapons;
@@ -102,12 +117,15 @@ public class ModConfigCore
 
         couldHaveFoodWhenFull = COULD_HAVE_FOOD_WHEN_FULL.get();
 
+        enableAutoRefill = ENABLE_AUTO_REFILL.get();
+
         increaseMaxStackSizeTo64 = INCREASE_MAX_STACK_SIZE_TO_64.get();
         increaseMaxStackSizeForEnchantedBooks = INCREASE_MAX_STACK_SIZE_TO_16_FOR_ENCHANTED_BOOKS.get();
         increaseMaxStackSizeForPotions = INCREASE_MAX_STACK_SIZE_TO_16_FOR_POTIONS.get();
         increaseMaxStackSizeForOthers = INCREASE_MAX_STACK_SIZE_TO_16_FOR_OTHERS.get();
 
         showDurability = SHOW_DURABILITY.get();
+        durabilityTooltipType = DURABILITY_TOOLTIP_TYPE.get();
         showTooltipsForWeapons = SHOW_TOOLTIPS_FOR_WEAPONS.get();
         showTooltipsForArmors = SHOW_TOOLTIPS_FOR_ARMORS.get();
         showTooltipsForFoods = SHOW_TOOLTIPS_FOR_FOODS.get();
