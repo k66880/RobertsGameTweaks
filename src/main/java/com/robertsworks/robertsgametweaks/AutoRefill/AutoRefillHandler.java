@@ -24,7 +24,7 @@ public class AutoRefillHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
-        RobertsGameTweaksMod.LOGGER.info("触发onPlayerInteract事件");
+        // RobertsGameTweaksMod.LOGGER.info("触发onPlayerInteract事件");
         if (ModConfigCore.enableAutoRefill) {
             if (event.getSide().isServer()) {
                 Player player = event.getEntity();
@@ -36,7 +36,7 @@ public class AutoRefillHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onItemUseFinish(LivingEntityUseItemEvent.Finish event) {
-        RobertsGameTweaksMod.LOGGER.info("触发onItemUseFinish事件");
+        // RobertsGameTweaksMod.LOGGER.info("触发onItemUseFinish事件");
         if (ModConfigCore.enableAutoRefill) {
             if (event.getEntity() instanceof Player player) {
                 int slot = player.getInventory().selected;
@@ -47,7 +47,7 @@ public class AutoRefillHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onItemDestroyed(PlayerDestroyItemEvent event) {
-        RobertsGameTweaksMod.LOGGER.info("触发onItemDestroyed事件");
+        // RobertsGameTweaksMod.LOGGER.info("触发onItemDestroyed事件");
         if (ModConfigCore.enableAutoRefill) {
             Player player = event.getEntity();
             int slot = player.getInventory().selected;
