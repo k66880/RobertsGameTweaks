@@ -10,47 +10,52 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = RobertsGameTweaksMod.MODID)
 public class AutoRefillHandler {
-    // 存储玩家最后使用物品的槽位信息
+    // 存储玩家最后手持物品的槽位信息（Key: 玩家, Value: 槽位+物品类型）
     private static final Map<Player, SlotInfo> lastUsedInfo = new HashMap<>();
 
-    @SubscribeEvent
-    public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) {
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
+        // RobertsGameTweaksMod.LOGGER.info("触发onPlayerInteract事件");
         if (ModConfigCore.enableAutoRefill) {
             if (event.getSide().isServer()) {
                 Player player = event.getEntity();
                 int slot = player.getInventory().selected;
-                ItemStack stack = player.getInventory().getSelected();
-                RecordUsedInfo(player, slot, stack);
+                lastUsedInfo.put(player, new SlotInfo(slot, event.getItemStack().getItem()));
             }
         }
     }
 
-    @SubscribeEvent
-    public static void onItemRightClick(final PlayerInteractEvent.RightClickItem event) {
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onItemUseFinish(LivingEntityUseItemEvent.Finish event) {
+        // RobertsGameTweaksMod.LOGGER.info("触发onItemUseFinish事件");
         if (ModConfigCore.enableAutoRefill) {
-            if (event.getSide().isServer()) {
-                Player player = event.getEntity();
+            if (event.getEntity() instanceof Player player) {
                 int slot = player.getInventory().selected;
-                ItemStack stack = player.getInventory().getSelected();
-                RecordUsedInfo(player, slot, stack);
+                lastUsedInfo.put(player, new SlotInfo(slot, event.getItem().getItem()));
             }
         }
     }
 
-    public static void RecordUsedInfo(Player player, int slot, ItemStack stack) {
-        if (!stack.isEmpty()) {
-            // 记录最后使用的槽位和物品类型
-            lastUsedInfo.put(player, new SlotInfo(slot, stack.getItem()));
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onItemDestroyed(PlayerDestroyItemEvent event) {
+        // RobertsGameTweaksMod.LOGGER.info("触发onItemDestroyed事件");
+        if (ModConfigCore.enableAutoRefill) {
+            Player player = event.getEntity();
+            int slot = player.getInventory().selected;
+            lastUsedInfo.put(player, new SlotInfo(slot, event.getOriginal().getItem()));
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase == TickEvent.Phase.END && event.side.isServer()) {
             Player player = event.player;
