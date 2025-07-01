@@ -6,6 +6,7 @@
 package com.robertsworks.robertsgametweaks.ToolTip;
 
 import com.mojang.datafixers.util.Pair;
+import com.robertsworks.robertsgametweaks.Config.ModConfigCore;
 import com.robertsworks.robertsgametweaks.util.RGTHelper;
 
 import net.minecraft.ChatFormatting;
@@ -25,7 +26,8 @@ public class FoodEffect {
 
     public MutableComponent makeLine() {
         MutableComponent line = Component.empty();
-        line.append(Component.literal("◆ ").withStyle(ChatFormatting.LIGHT_PURPLE));
+        if (!ModConfigCore.tooltipPrefixWord.isEmpty())
+            line.append(Component.literal(ModConfigCore.tooltipPrefixWord).withStyle(ChatFormatting.LIGHT_PURPLE));
         line.append(Component.translatable(descriptionId).withStyle(ChatFormatting.DARK_PURPLE));
         line.append(Component.literal(" " + RGTHelper.formatRomanNumber(amplifier)).withStyle(ChatFormatting.DARK_PURPLE)); // 效果名称和等级
         line.append(Component.literal(" (" + RGTHelper.ticksToMMSS(duration) + ")").withStyle(ChatFormatting.GRAY)); // 持续时间

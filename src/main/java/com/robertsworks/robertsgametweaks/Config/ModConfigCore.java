@@ -45,6 +45,10 @@ public class ModConfigCore
         .comment("Whether to enable \"increase the max stack size to 16 for saddles, boats, minecarts, beds\"")
         .define("increaseMaxStackSizeForOthers", true);
 
+    private static final ForgeConfigSpec.ConfigValue<String> TOOLTIP_PREFIX_WORD = BUILDER
+        .comment("The prefix word of tooltips")
+        .define("tooltipPrefixWord", "◆ ");
+
     private static final ForgeConfigSpec.BooleanValue SHOW_DURABILITY = BUILDER
         .comment("Whether to show the durability info")
         .define("showDurability", true);
@@ -61,9 +65,13 @@ public class ModConfigCore
         .comment("Whether to show the tooltips for armors")
         .define("showTooltipsForArmors", true);
 
-    private static final ForgeConfigSpec.BooleanValue SHOW_TOOLTIPS_FOR_FOODS = BUILDER
-        .comment("Whether to show the tooltips for foods")
-        .define("showTooltipsForFoods", true);
+    private static final ForgeConfigSpec.BooleanValue SHOW_ATTRIBUTES_FOR_FOODS = BUILDER
+        .comment("Whether to show the attributes tooltips for foods")
+        .define("showAttributesForFoods", true);
+
+    private static final ForgeConfigSpec.BooleanValue SHOW_EFFECTS_FOR_FOODS = BUILDER
+        .comment("Whether to show the effects tooltips for foods")
+        .define("showEffectsForFoods", true);
 
     private static final ForgeConfigSpec.BooleanValue REMOVE_VANILLA_TOOLTIPS = BUILDER
         .comment("Whether to remove the vanilla tooltips")
@@ -92,6 +100,9 @@ public class ModConfigCore
     /** 是否启用“增加鞍、船、矿车、床堆叠上限至16” */
     public static boolean increaseMaxStackSizeForOthers;
 
+    /** 提示信息的前缀字符 */
+    public static String tooltipPrefixWord;
+
     /** 是否显示耐久度信息 */
     public static boolean showDurability;
 
@@ -104,8 +115,11 @@ public class ModConfigCore
     /** 是否显示防具的属性信息 */
     public static boolean showTooltipsForArmors;
 
-    /** 是否显示食物的属性信息 */
-    public static boolean showTooltipsForFoods;
+    /** 是否显示食物的基础属性信息 */
+    public static boolean showAttributesForFoods;
+
+    /** 是否显示食物的附带效果信息 */
+    public static boolean showEffectsForFoods;
 
     /** 是否移除原版游戏的武器、工具、防具属性信息显示 */
     public static boolean removeVanillaTooltips;
@@ -124,11 +138,13 @@ public class ModConfigCore
         increaseMaxStackSizeForPotions = INCREASE_MAX_STACK_SIZE_TO_16_FOR_POTIONS.get();
         increaseMaxStackSizeForOthers = INCREASE_MAX_STACK_SIZE_TO_16_FOR_OTHERS.get();
 
+        tooltipPrefixWord = TOOLTIP_PREFIX_WORD.get();
         showDurability = SHOW_DURABILITY.get();
         durabilityTooltipType = DURABILITY_TOOLTIP_TYPE.get();
         showTooltipsForWeapons = SHOW_TOOLTIPS_FOR_WEAPONS.get();
         showTooltipsForArmors = SHOW_TOOLTIPS_FOR_ARMORS.get();
-        showTooltipsForFoods = SHOW_TOOLTIPS_FOR_FOODS.get();
+        showAttributesForFoods = SHOW_ATTRIBUTES_FOR_FOODS.get();
+        showEffectsForFoods = SHOW_EFFECTS_FOR_FOODS.get();
         removeVanillaTooltips = REMOVE_VANILLA_TOOLTIPS.get();
     }
 }

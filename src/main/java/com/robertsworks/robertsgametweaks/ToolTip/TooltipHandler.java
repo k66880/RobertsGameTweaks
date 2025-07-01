@@ -179,14 +179,18 @@ public class TooltipHandler {
 
     // 添加食物信息
     private static void addFoodInfo(ItemStack stack, List<Component> lines) {
-        if (!ModConfigCore.showTooltipsForFoods) return;
+        if (!ModConfigCore.showAttributesForFoods && !ModConfigCore.showEffectsForFoods) return;
 
         FoodAttributes foodAttributes = FoodAttributes.LoadFromItemStack(stack);
         if (foodAttributes.hasFoodProperties) {
-            lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_hunger", foodAttributes.formatHunger()));
-            lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_saturation", foodAttributes.formatSaturation()));
-            for (FoodEffect effect : foodAttributes.effects)
-                lines.add(effect.makeLine());
+            if (ModConfigCore.showAttributesForFoods) {
+                lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_hunger", foodAttributes.formatHunger()));
+                lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_saturation", foodAttributes.formatSaturation()));
+            }
+            if (ModConfigCore.showEffectsForFoods) {
+                for (FoodEffect effect : foodAttributes.effects)
+                    lines.add(effect.makeLine());
+            }
         }
     }
 
@@ -210,7 +214,8 @@ public class TooltipHandler {
                 dotColor = ChatFormatting.GRAY;
                 break;
         }
-        line.append(Component.literal("◆ ").withStyle(dotColor));
+        if (!ModConfigCore.tooltipPrefixWord.isEmpty())
+            line.append(Component.literal(ModConfigCore.tooltipPrefixWord).withStyle(dotColor));
         line.append(Component.translatable(nameKey));
         line.append(value);
         return line;
