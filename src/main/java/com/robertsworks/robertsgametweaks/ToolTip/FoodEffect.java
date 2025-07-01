@@ -4,6 +4,7 @@
  * MIT License
  */package com.robertsworks.robertsgametweaks.ToolTip;
 
+import com.robertsworks.robertsgametweaks.Config.ModConfigCore;
 import com.robertsworks.robertsgametweaks.util.RGTHelper;
 
 import net.minecraft.ChatFormatting;
