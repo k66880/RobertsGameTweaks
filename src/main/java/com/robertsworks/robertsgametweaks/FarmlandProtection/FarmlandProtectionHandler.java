@@ -1,6 +1,7 @@
 package com.robertsworks.robertsgametweaks.FarmlandProtection;
 
 import com.robertsworks.robertsgametweaks.RobertsGameTweaksMod;
+import com.robertsworks.robertsgametweaks.Config.ModConfigCore;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -12,10 +13,12 @@ import net.minecraftforge.fml.common.Mod;
 public class FarmlandProtectionHandler {
     @SubscribeEvent
     public static void onFarmlandTrample(BlockEvent.FarmlandTrampleEvent event) {
-        Entity entity = event.getEntity();
-        // 仅当实体是玩家时取消践踏事件
-        if (entity instanceof Player) {
-            event.setCanceled(true);
+        if (ModConfigCore.enableFarmlandProtection) {
+            Entity entity = event.getEntity();
+            // 仅当实体是玩家时取消践踏事件
+            if (entity instanceof Player) {
+                event.setCanceled(true);
+            }
         }
     }
 }
