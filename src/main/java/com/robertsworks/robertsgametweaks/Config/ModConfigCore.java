@@ -33,6 +33,10 @@ public class ModConfigCore
         .comment("Whether to enable \"protect the farmland when player jumping\"")
         .define("enableFarmlandProtection", true);
 
+    private static final ForgeConfigSpec.IntValue SLEEPING_ADVANCE_TIME = BUILDER
+        .comment("The ticks that allowing players to sleep earlier (20Ticks = 1Second)")
+        .defineInRange("sleepingAdvanceTime", 1200, 0, 6000);
+
     private static final ForgeConfigSpec.BooleanValue INCREASE_MAX_STACK_SIZE_TO_64 = BUILDER
         .comment("Whether to enable \"increase the max stack size to 64 for snowball, egg, ender pearl, honey bottle, banners and armor stand\"")
         .define("increaseMaxStackSizeTo64", true);
@@ -95,6 +99,9 @@ public class ModConfigCore
     /** 是否启用“当玩家在耕地上跳跃时保护耕地” */
     public static boolean enableFarmlandProtection;
 
+    /** 允许玩家提前睡觉的游戏时刻数 */
+    public static long sleepingAdvanceTime;
+
     /** 是否启用“增加雪球、鸡蛋、末影珍珠、蜂蜜瓶、旗帜、盔甲架堆叠上限至64” */
     public static boolean increaseMaxStackSizeTo64;
 
@@ -141,6 +148,8 @@ public class ModConfigCore
         enableAutoRefill = ENABLE_AUTO_REFILL.get();
 
         enableFarmlandProtection = ENABLE_FARMLAND_PROTECTION.get();
+
+        sleepingAdvanceTime = (long)SLEEPING_ADVANCE_TIME.get();
 
         increaseMaxStackSizeTo64 = INCREASE_MAX_STACK_SIZE_TO_64.get();
         increaseMaxStackSizeForEnchantedBooks = INCREASE_MAX_STACK_SIZE_TO_16_FOR_ENCHANTED_BOOKS.get();
