@@ -6,9 +6,13 @@
 package com.robertsworks.robertsgametweaks.util;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class RGTHelper {
     /**
@@ -63,5 +67,38 @@ public class RGTHelper {
         if (!stack.isDamageableItem()) return true;
         Item item = stack.getItem();
         return item.components().get(DataComponents.UNBREAKABLE) != null;
+    }
+
+    /**
+     * 向全体玩家发送一个通知
+     * @param level 要通知的世界
+     * @param message 要通知的内容
+     * @return 返回是否通知成功
+     */
+    public static boolean notifyAllPlayers(Level level, Component message) {
+        try {
+            if (level instanceof ServerLevel serverLevel) {
+                MinecraftServer server = serverLevel.getServer();
+                server.getPlayerList().broadcastSystemMessage(message, false);
+                return true;
+            }
+        } catch (Exception e) {}
+        return false;
+    }
+
+    /**
+     * 设置游戏时间
+     * @param level 要设置的世界
+     * @param ticks 要设置的时间（tick数，20Tick = 1Second）
+     * @return
+     */
+    public static boolean setGameTime(Level level, long ticks) {
+        try {
+            if (level instanceof ServerLevel serverLevel) {
+                serverLevel.setDayTime(ticks);
+                return true;
+            }
+        } catch (Exception e) {}
+        return false;
     }
 }

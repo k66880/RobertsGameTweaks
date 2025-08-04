@@ -14,5 +14,6 @@
     "tooltip.roberts_game_tweaks.armor_toughness": "盔甲韧性: ",
     "tooltip.roberts_game_tweaks.knockback_resistance": "击退抗性: ",
     "tooltip.roberts_game_tweaks.restore_hunger": "回复饥饿值: ",
-    "tooltip.roberts_game_tweaks.restore_saturation": "回复饱和度: "
+    "tooltip.roberts_game_tweaks.restore_saturation": "回复饱和度: ",
+    "tooltip.roberts_game_tweaks.rest_early": "%s提前休息，夜幕降临"
 }
