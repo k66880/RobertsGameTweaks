@@ -9,6 +9,7 @@ import com.robertsworks.robertsgametweaks.RobertsGameTweaksMod;
 import com.robertsworks.robertsgametweaks.Config.ModConfigCore;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,14 +24,17 @@ public class AttackCoolDownHandler {
             Minecraft mc = Minecraft.getInstance();
             if (mc.player == null || !event.isAttack()) return;
 
-            // 获取攻击冷却进度，1.0表示冷却完成
-            float attackStrength = mc.player.getAttackStrengthScale(0.0F);
+            // 只有当玩家指向实体时才检查攻击冷却
+            if (mc.hitResult != null && mc.hitResult.getType() == HitResult.Type.ENTITY) {
+                // 获取攻击冷却进度，1.0表示冷却完成
+                float attackStrength = mc.player.getAttackStrengthScale(0.0F);
 
-            if (attackStrength < 1.0F) {
-                // 取消事件以阻止攻击动作和服务端数据包发送
-                event.setCanceled(true);
-                // 阻止手部摆动动画
-                event.setSwingHand(false);
+                if (attackStrength < 1.0F) {
+                    // 取消事件以阻止攻击动作和服务端数据包发送
+                    event.setCanceled(true);
+                    // 阻止手部摆动动画
+                    event.setSwingHand(false);
+                }
             }
         }
     }
