@@ -25,15 +25,18 @@ public class AttackCoolDownHandler {
             if (mc.player == null || !event.isAttack()) return;
 
             // 只有当玩家指向实体时才检查攻击冷却
-            if (mc.hitResult != null && mc.hitResult.getType() == HitResult.Type.ENTITY) {
-                // 获取攻击冷却进度，1.0表示冷却完成
-                float attackStrength = mc.player.getAttackStrengthScale(0.0F);
-
-                if (attackStrength < 1.0F) {
-                    // 取消事件以阻止攻击动作和服务端数据包发送
-                    event.setCanceled(true);
-                    // 阻止手部摆动动画
-                    event.setSwingHand(false);
+            if (mc.hitResult != null) {
+                var hitType = mc.hitResult.getType();
+                if (hitType == HitResult.Type.ENTITY || hitType == HitResult.Type.MISS) {
+                    // 获取攻击冷却进度，1.0表示冷却完成
+                    float attackStrength = mc.player.getAttackStrengthScale(0.0F);
+    
+                    if (attackStrength < 1.0F) {
+                        // 取消事件以阻止攻击动作和服务端数据包发送
+                        event.setCanceled(true);
+                        // 阻止手部摆动动画
+                        event.setSwingHand(false);
+                    }
                 }
             }
         }
