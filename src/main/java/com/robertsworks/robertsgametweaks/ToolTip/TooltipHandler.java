@@ -20,6 +20,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -72,6 +73,7 @@ public class TooltipHandler {
         // 添加mod提示信息
         List<Component> newLines = new ArrayList<>();
         addDurabilityInfo(stack, newLines);
+        addMiningLevelInfo(stack, newLines);
         addAttackInfo(stack, newLines);
         addArmorInfo(stack, newLines);
         addFoodInfo(stack, newLines);
@@ -144,6 +146,17 @@ public class TooltipHandler {
         }
     }
 
+    // 添加挖掘等级
+    private static void addMiningLevelInfo(ItemStack stack, List<Component> lines) {
+        if (!ModConfigCore.showHarvestLevel) return;
+
+        if (stack.getItem() instanceof DiggerItem) {
+            int harvestLevel = HarvestLevel.getHarvestLevel(stack);
+            Component levelName = HarvestLevel.getHarvestLevelName(harvestLevel);
+            lines.add(makeAttributeLine(AttributeType.HARVESTLEVEL, "tooltip.roberts_game_tweaks.harvest_level", levelName));
+        }
+    }
+
     // 添加攻击信息
     private static void addAttackInfo(ItemStack stack, List<Component> lines) {
         if (!ModConfigCore.showTooltipsForWeapons) return;
@@ -194,52 +207,35 @@ public class TooltipHandler {
         }
     }
 
-    private static Component makeAttributeLine(AttributeType attributeType, String nameKey, Component value) {
-        MutableComponent line = Component.empty();
-        ChatFormatting dotColor;
+    private static ChatFormatting getAttributeTypeColor(AttributeType attributeType) {
         switch (attributeType) {
             case DURABILITY:
-                dotColor = ChatFormatting.DARK_GREEN;
-                break;
+                return ChatFormatting.DARK_GREEN;
+            case HARVESTLEVEL:
+                return ChatFormatting.DARK_GREEN;
             case ATTACK:
-                dotColor = ChatFormatting.BLUE;
-                break;
+                return ChatFormatting.BLUE;
             case ARMOR:
-                dotColor = ChatFormatting.DARK_AQUA;
-                break;
+                return ChatFormatting.DARK_AQUA;
             case FOOD:
-                dotColor = ChatFormatting.GOLD;
-                break;
+                return ChatFormatting.GOLD;
             default:
-                dotColor = ChatFormatting.GRAY;
-                break;
+                return ChatFormatting.GRAY;
         }
+    }
+
+    private static Component makeAttributeLine(AttributeType attributeType, String nameKey, Component value) {
+        MutableComponent line = Component.empty();
+        ChatFormatting color = getAttributeTypeColor(attributeType);
         if (!ModConfigCore.tooltipPrefixWord.isEmpty())
-            line.append(Component.literal(ModConfigCore.tooltipPrefixWord).withStyle(dotColor));
+            line.append(Component.literal(ModConfigCore.tooltipPrefixWord).withStyle(color));
         line.append(Component.translatable(nameKey));
         line.append(value);
         return line;
     }
     private static Component makeAttributeLine(AttributeType attributeType, String nameKey, String value) {
-        ChatFormatting valueColor;
-        switch (attributeType) {
-            case DURABILITY:
-                valueColor = ChatFormatting.GREEN;
-                break;
-            case ATTACK:
-                valueColor = ChatFormatting.BLUE;
-                break;
-            case ARMOR:
-                valueColor = ChatFormatting.AQUA;
-                break;
-            case FOOD:
-                valueColor = ChatFormatting.GOLD;
-                break;
-            default:
-                valueColor = ChatFormatting.WHITE;
-                break;
-        }
-        return makeAttributeLine(attributeType, nameKey, Component.literal(value).withStyle(valueColor));
+        ChatFormatting color = getAttributeTypeColor(attributeType);
+        return makeAttributeLine(attributeType, nameKey, Component.literal(value).withStyle(color));
     }
 
     // 移除原版属性相关提示
@@ -286,6 +282,7 @@ public class TooltipHandler {
 
     private static enum AttributeType {
         DURABILITY,
+        HARVESTLEVEL,
         ATTACK,
         ARMOR,
         FOOD

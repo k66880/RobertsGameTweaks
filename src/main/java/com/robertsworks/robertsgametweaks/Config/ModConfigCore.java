@@ -61,6 +61,10 @@ public class ModConfigCore
         .comment("Whether to show the durability info")
         .define("showDurability", true);
 
+    private static final ForgeConfigSpec.BooleanValue SHOW_HARVEST_LEVEL = BUILDER
+        .comment("Whether to show the harvest level info")
+        .define("showHarvestLevel", true);
+
     private static final ForgeConfigSpec.EnumValue<DurabilityTooltipType> DURABILITY_TOOLTIP_TYPE = BUILDER
         .comment("The display type of durability info")
         .defineEnum("durabilityTooltipType", DurabilityTooltipType.Number);
@@ -120,6 +124,9 @@ public class ModConfigCore
     /** 是否显示耐久度信息 */
     public static boolean showDurability;
 
+    /** 是否显示挖掘工具的挖掘等级 */
+    public static boolean showHarvestLevel;
+
     /** （当showDurability启用时）耐久度信息的展示方式 */
     public static DurabilityTooltipType durabilityTooltipType;
 
@@ -158,6 +165,7 @@ public class ModConfigCore
 
         tooltipPrefixWord = TOOLTIP_PREFIX_WORD.get();
         showDurability = SHOW_DURABILITY.get();
+        showHarvestLevel = SHOW_HARVEST_LEVEL.get();
         durabilityTooltipType = DURABILITY_TOOLTIP_TYPE.get();
         showTooltipsForWeapons = SHOW_TOOLTIPS_FOR_WEAPONS.get();
         showTooltipsForArmors = SHOW_TOOLTIPS_FOR_ARMORS.get();
