@@ -150,8 +150,8 @@ public class TooltipHandler {
     private static void addMiningLevelInfo(ItemStack stack, List<Component> lines) {
         if (!ModConfigCore.showHarvestLevel) return;
 
-        if (stack.getItem() instanceof DiggerItem) {
-            int harvestLevel = HarvestLevel.getHarvestLevel(stack);
+        int harvestLevel = HarvestLevel.getHarvestLevel(stack);
+        if (harvestLevel > 0) {
             Component levelName = HarvestLevel.getHarvestLevelName(harvestLevel);
             lines.add(makeAttributeLine(AttributeType.HARVESTLEVEL, "tooltip.roberts_game_tweaks.harvest_level", levelName));
         }
