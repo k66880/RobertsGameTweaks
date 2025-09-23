@@ -8,6 +8,7 @@ package com.robertsworks.robertsgametweaks.util;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 public class SingleItemSlot extends Slot {
     public SingleItemSlot(Container container, int index, int x, int y) {
@@ -16,25 +17,30 @@ public class SingleItemSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        // 仅当槽位为空时才允许放置
-        return this.getItem().isEmpty();
+        if (stack.getItem() == Items.ENCHANTED_BOOK) {
+            if (!this.getItem().isEmpty()) return false;
+        }
+        return super.mayPlace(stack);
     }
 
     @Override
     public int getMaxStackSize() {
-        // 最大堆叠数为1
         return 1;
     }
 
     @Override
     public int getMaxStackSize(ItemStack stack) {
-        // 无论放入什么物品都限制为1
-        return 1;
+        if (stack.getItem() == Items.ENCHANTED_BOOK)
+            return 1;
+        else
+            return super.getMaxStackSize();
     }
 
     @Override
     public void set(ItemStack stack) {
-        // 确保放入的堆叠数量不超过1
-        super.set(stack.copyWithCount(1));
+        if (stack.getItem() == Items.ENCHANTED_BOOK)
+            super.set(stack.copyWithCount(1));
+        else
+            super.set(stack);
     }
 }
