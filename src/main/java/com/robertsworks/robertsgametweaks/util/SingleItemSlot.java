@@ -39,7 +39,7 @@ public class SingleItemSlot extends Slot {
     @Override
     public void set(ItemStack stack) {
         if (stack.getItem() == Items.ENCHANTED_BOOK)
-            super.set(stack.copyWithCount(1));
+            super.set(RGTHelper.clonItemStack(stack, 1));
         else
             super.set(stack);
     }

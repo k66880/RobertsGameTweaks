@@ -43,7 +43,8 @@ public class ArmorAttributes {
         ArmorAttributes res = new ArmorAttributes();
         
         if (stack.getItem() instanceof ArmorItem armorItem) {
-            Multimap<Attribute, AttributeModifier> attributes = stack.getAttributeModifiers(armorItem.getEquipmentSlot());
+            var slot = armorItem.getEquipmentSlot();
+            var attributes = stack.getAttributeModifiers(slot);
             res.hasArmor = attributes.containsKey(Attributes.ARMOR);
             res.hasArmorToughness = attributes.containsKey(Attributes.ARMOR_TOUGHNESS);
             res.hasKnockbackResistance = attributes.containsKey(Attributes.KNOCKBACK_RESISTANCE);
