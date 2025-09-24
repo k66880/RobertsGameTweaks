@@ -29,12 +29,16 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = RobertsGameTweaksMod.MODID, value = Dist.CLIENT)
 public class TooltipHandler {
     private final static Set<String> HIDE_KEYS = Set.of(
-        "item.modifiers.mainhand",
-        "item.modifiers.offhand",
+        "item.modifiers.any",
+        "item.modifiers.armor",
+        "item.modifiers.body",
         "item.modifiers.chest",
         "item.modifiers.feet",
+        "item.modifiers.hand",
         "item.modifiers.head",
         "item.modifiers.legs",
+        "item.modifiers.mainhand",
+        "item.modifiers.offhand",
         
         "attribute.name.generic.attack_damage",
         "attribute.name.generic.attack_knockback",
