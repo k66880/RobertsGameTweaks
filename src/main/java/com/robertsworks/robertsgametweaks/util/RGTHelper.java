@@ -101,4 +101,26 @@ public class RGTHelper {
         } catch (Exception e) {}
         return false;
     }
+
+    /**
+     * 克隆一个ItemStack，堆叠数量与原ItemStack相同
+     * @param stack 要克隆的ItemStack
+     * @return
+     */
+    public static ItemStack clonItemStack(ItemStack stack) {
+        return clonItemStack(stack, stack.getCount());
+    }
+
+    /**
+     * 克隆一个ItemStack
+     * @param stack 要克隆的ItemStack
+     * @param count 新的ItemStack的堆叠数量
+     * @return
+     */
+    public static ItemStack clonItemStack(ItemStack stack, int count) {
+        if (stack.isEmpty()) return ItemStack.EMPTY;
+        var newStack = stack.copy();
+        newStack.setCount(count);
+        return newStack;
+    }
 }

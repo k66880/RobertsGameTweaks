@@ -30,7 +30,7 @@ public class ArmorAttributes {
     }
 
     public String formAtknockbackResistance() {
-        return "+" + df.format(knockbackResistance * 10);
+        return "+" + df.format(knockbackResistance * 100) + "%";
     }
 
     public static ArmorAttributes LoadFromItemStack(ItemStack stack) {
