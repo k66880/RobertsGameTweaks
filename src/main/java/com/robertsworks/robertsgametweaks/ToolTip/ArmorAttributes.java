@@ -13,7 +13,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.HorseArmorItem;
 import net.minecraft.world.item.ItemStack;
 
@@ -37,27 +36,25 @@ public class ArmorAttributes {
     }
 
     public String formAtknockbackResistance() {
-        return "+" + df.format(knockbackResistance * 10);
+        return "+" + df.format(knockbackResistance * 100) + "%";
     }
 
     public static ArmorAttributes LoadFromItemStack(ItemStack stack) {
         ArmorAttributes res = new ArmorAttributes();
         
         if (stack.getItem() instanceof ArmorItem armorItem) {
-            ArmorMaterial material = armorItem.getMaterial();
-            ArmorItem.Type type = armorItem.getType();
-            
-            res.hasArmor = true;
-            res.armor = material.getDefenseForType(type);
-            
-            res.hasArmorToughness = true;
-            res.armorToughness = material.getToughness();
-            
-            Multimap<Attribute, AttributeModifier> attributes = stack.getAttributeModifiers(armorItem.getEquipmentSlot());
-            if (attributes.containsKey(Attributes.KNOCKBACK_RESISTANCE)) {
-                res.hasKnockbackResistance = true;
+            var slot = armorItem.getEquipmentSlot();
+            var attributes = stack.getAttributeModifiers(slot);
+            res.hasArmor = attributes.containsKey(Attributes.ARMOR);
+            res.hasArmorToughness = attributes.containsKey(Attributes.ARMOR_TOUGHNESS);
+            res.hasKnockbackResistance = attributes.containsKey(Attributes.KNOCKBACK_RESISTANCE);
+
+            if (res.hasArmor)
+                res.armor = getAttributeValue(attributes, Attributes.ARMOR);
+            if (res.hasArmorToughness)
+                res.armorToughness = getAttributeValue(attributes, Attributes.ARMOR_TOUGHNESS);
+            if (res.hasKnockbackResistance)
                 res.knockbackResistance = getAttributeValue(attributes, Attributes.KNOCKBACK_RESISTANCE);
-            }
         }
 
         if (stack.getItem() instanceof HorseArmorItem horseArmorItem) {
