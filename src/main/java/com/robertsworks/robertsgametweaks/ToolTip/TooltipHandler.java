@@ -26,6 +26,8 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
 @Mod.EventBusSubscriber(modid = RobertsGameTweaksMod.MODID, value = Dist.CLIENT)
 public class TooltipHandler {
@@ -66,6 +68,10 @@ public class TooltipHandler {
     public static void onItemTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         List<Component> tooltip = event.getToolTip();
+
+        var item = stack.getItem();
+        var id = ForgeRegistries.ITEMS.getKey(item).toString();
+        var ar = id.split(":");
 
         // 移除原版工具、武器、防具信息
         removeVanillaTooltips(tooltip);
