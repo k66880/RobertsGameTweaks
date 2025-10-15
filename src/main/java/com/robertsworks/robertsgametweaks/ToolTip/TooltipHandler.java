@@ -237,6 +237,7 @@ public class TooltipHandler {
     // 添加防具信息
     private static void addArmorsTooltips(TipTargetInfo targetInfo, List<Component> lines) {
         if (!ModConfigCore.showTooltipsForArmors) return;
+        if (CheckBlackList(targetInfo, ModConfigCore.armorsTooltipsBlacklist)) return;
 
         ArmorAttributes armorAttributes = ArmorAttributes.LoadFromItemStack(targetInfo.stack);
         if (armorAttributes.hasArmor)

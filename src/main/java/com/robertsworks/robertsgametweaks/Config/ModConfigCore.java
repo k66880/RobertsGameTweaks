@@ -87,6 +87,11 @@ public class ModConfigCore
         .comment("Whether to show the tooltips for armors")
         .define("showTooltipsForArmors", true);
 
+    private static final ForgeConfigSpec.ConfigValue<String> ARMORS_TOOLTIPS_BLACKLIST = BUILDER
+        .comment("A blacklist used to specify the items which not required armors tooltips")
+        .comment("For example: \"minecraft:iron_chestplate, diamond_chestplate, @tconstruct\"")
+        .define("armorsTooltipsBlacklist", "@tconstruct");
+
     private static final ForgeConfigSpec.BooleanValue SHOW_ATTRIBUTES_FOR_FOODS = BUILDER
         .comment("Whether to show the attributes tooltips for foods")
         .define("showAttributesForFoods", true);
@@ -152,6 +157,9 @@ public class ModConfigCore
     /** 是否显示防具的属性信息 */
     public static boolean showTooltipsForArmors;
 
+    /** 防具属性信息黑名单 */
+    public static String armorsTooltipsBlacklist;
+
     /** 是否显示食物的基础属性信息 */
     public static boolean showAttributesForFoods;
 
@@ -187,6 +195,7 @@ public class ModConfigCore
         showTooltipsForWeapons = SHOW_TOOLTIPS_FOR_WEAPONS.get();
         weaponsTooltipsBlacklist = WEAPONS_TOOLTIPS_BLACKLIST.get();
         showTooltipsForArmors = SHOW_TOOLTIPS_FOR_ARMORS.get();
+        armorsTooltipsBlacklist = ARMORS_TOOLTIPS_BLACKLIST.get();
         showAttributesForFoods = SHOW_ATTRIBUTES_FOR_FOODS.get();
         showEffectsForFoods = SHOW_EFFECTS_FOR_FOODS.get();
         removeVanillaTooltips = REMOVE_VANILLA_TOOLTIPS.get();
