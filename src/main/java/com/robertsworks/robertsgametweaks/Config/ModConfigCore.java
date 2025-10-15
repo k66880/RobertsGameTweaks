@@ -100,6 +100,10 @@ public class ModConfigCore
         .comment("Whether to show the effects tooltips for foods")
         .define("showEffectsForFoods", true);
 
+    private static final ForgeConfigSpec.BooleanValue SHOW_BURN_TIME_FOR_FUEL = BUILDER
+        .comment("Whether to show the burn time tooltips for fuel")
+        .define("showBurnTimeForFuel", true);
+
     private static final ForgeConfigSpec.BooleanValue REMOVE_VANILLA_TOOLTIPS = BUILDER
         .comment("Whether to remove the vanilla tooltips")
         .define("removeVanillaTooltips", true);
@@ -166,6 +170,9 @@ public class ModConfigCore
     /** 是否显示食物的附带效果信息 */
     public static boolean showEffectsForFoods;
 
+    /** 是否显示燃料的燃烧时间 */
+    public static boolean showBurnTimeForFuel;
+
     /** 是否移除原版游戏的武器、工具、防具属性信息显示 */
     public static boolean removeVanillaTooltips;
 
@@ -198,6 +205,7 @@ public class ModConfigCore
         armorsTooltipsBlacklist = ARMORS_TOOLTIPS_BLACKLIST.get();
         showAttributesForFoods = SHOW_ATTRIBUTES_FOR_FOODS.get();
         showEffectsForFoods = SHOW_EFFECTS_FOR_FOODS.get();
+        showBurnTimeForFuel = SHOW_BURN_TIME_FOR_FUEL.get();
         removeVanillaTooltips = REMOVE_VANILLA_TOOLTIPS.get();
     }
 }

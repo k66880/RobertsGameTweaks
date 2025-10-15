@@ -16,6 +16,7 @@ import com.robertsworks.robertsgametweaks.util.DurabilityTooltipType;
 import com.robertsworks.robertsgametweaks.util.RGTHelper;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -77,6 +78,7 @@ public class TooltipHandler {
         addWeaponsTooltips(targetInfo, newLines);
         addArmorsTooltips(targetInfo, newLines);
         addFoodTooltips(targetInfo, newLines);
+        addBurnTimeTooltips(targetInfo, newLines);
         tooltip.addAll(1, newLines);
     }
 
@@ -271,6 +273,19 @@ public class TooltipHandler {
 
     //#endregion
 
+    //#region 添加燃料的燃烧时间
+
+    // 添加燃料的燃烧时间
+    private static void addBurnTimeTooltips(TipTargetInfo targetInfo, List<Component> lines) {
+        if (!ModConfigCore.showBurnTimeForFuel) return;
+        
+        var burnTime = ForgeHooks.getBurnTime(targetInfo.stack, null);
+        if (burnTime > 0)
+            lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.burn_time", RGTHelper.ticksToMMSS(burnTime)));
+    }
+
+    //#endregion
+
     //#region 其他
 
     /** 判断目标物品是否为黑名单物品 */
@@ -308,6 +323,8 @@ public class TooltipHandler {
                 return ChatFormatting.DARK_AQUA;
             case FOOD:
                 return ChatFormatting.GOLD;
+            case BURNTIME:
+                return ChatFormatting.GOLD;
             default:
                 return ChatFormatting.GRAY;
         }
@@ -332,7 +349,8 @@ public class TooltipHandler {
         HARVESTLEVEL,
         ATTACK,
         ARMOR,
-        FOOD
+        FOOD,
+        BURNTIME
     }
 
     //#endregion
