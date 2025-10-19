@@ -81,7 +81,7 @@ public class ModConfigCore
     private static final ForgeConfigSpec.ConfigValue<String> WEAPONS_TOOLTIPS_BLACKLIST = BUILDER
         .comment("A blacklist used to specify the items which not required weapons tooltips")
         .comment("For example: \"minecraft:wooden_sword, diamond_sword, @tconstruct\"")
-        .define("weaponsTooltipsBlacklist", "@tconstruct");
+        .define("weaponsTooltipsBlacklist", "");
 
     private static final ForgeConfigSpec.BooleanValue SHOW_TOOLTIPS_FOR_ARMORS = BUILDER
         .comment("Whether to show the tooltips for armors")
@@ -90,7 +90,7 @@ public class ModConfigCore
     private static final ForgeConfigSpec.ConfigValue<String> ARMORS_TOOLTIPS_BLACKLIST = BUILDER
         .comment("A blacklist used to specify the items which not required armors tooltips")
         .comment("For example: \"minecraft:iron_chestplate, diamond_chestplate, @tconstruct\"")
-        .define("armorsTooltipsBlacklist", "@tconstruct");
+        .define("armorsTooltipsBlacklist", "");
 
     private static final ForgeConfigSpec.BooleanValue SHOW_ATTRIBUTES_FOR_FOODS = BUILDER
         .comment("Whether to show the attributes tooltips for foods")
