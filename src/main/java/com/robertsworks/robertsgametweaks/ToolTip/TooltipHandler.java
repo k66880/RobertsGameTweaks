@@ -16,6 +16,7 @@ import com.robertsworks.robertsgametweaks.util.DurabilityTooltipType;
 import com.robertsworks.robertsgametweaks.util.RGTHelper;
 
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -65,23 +66,69 @@ public class TooltipHandler {
     public static void onItemTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
         List<Component> tooltip = event.getToolTip();
+        TipTargetInfo targetInfo = new TipTargetInfo(stack);
 
         // 移除原版工具、武器、防具信息
         removeVanillaTooltips(tooltip);
         
         // 添加mod提示信息
         List<Component> newLines = new ArrayList<>();
-        addDurabilityInfo(stack, newLines);
-        addMiningLevelInfo(stack, newLines);
-        addAttackInfo(stack, newLines);
-        addArmorInfo(stack, newLines);
-        addFoodInfo(stack, newLines);
+        addDurabilityTooltips(targetInfo, newLines);
+        addMiningLevelTooltips(targetInfo, newLines);
+        addWeaponsTooltips(targetInfo, newLines);
+        addArmorsTooltips(targetInfo, newLines);
+        addFoodTooltips(targetInfo, newLines);
+        addBurnTimeTooltips(targetInfo, newLines);
         tooltip.addAll(1, newLines);
     }
 
+    //#region 移除原版属性相关提示
+
+    // 移除原版属性相关提示
+    public static void removeVanillaTooltips(List<Component> tooltip) {
+        if (!ModConfigCore.removeVanillaTooltips) return;
+        Iterator<Component> iterator = tooltip.iterator();
+        while (iterator.hasNext()) {
+            Component line = iterator.next();
+            if (isVanillaTooltips(line)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    private static boolean isVanillaTooltips(Component component) {
+        if (component.getContents() instanceof TranslatableContents translatable) {
+            String key = translatable.getKey();
+
+            if (HIDE_KEYS.contains(key))
+                return true;
+
+            Object[] args = translatable.getArgs();
+            for (Object object : args) {
+                if (object instanceof Component carg) {
+                    if (isVanillaTooltips(carg))
+                        return true;
+                }
+            }
+        }
+
+        for (Component sibling : component.getSiblings()) {
+            if (isVanillaTooltips(sibling))
+                return true;
+        }
+        return false;
+    }
+
+    //#endregion
+
+    //#region 添加耐久信息
+
     // 添加耐久信息
-    private static void addDurabilityInfo(ItemStack stack, List<Component> lines) {
+    private static void addDurabilityTooltips(TipTargetInfo targetInfo, List<Component> lines) {
         if (!ModConfigCore.showDurability) return;
+        if (CheckBlackList(targetInfo, ModConfigCore.durabilityBlacklist)) return;
+
+        var stack = targetInfo.stack;
         int max = stack.getMaxDamage();
         if (max > 0) {
             // 物品无法破坏
@@ -145,22 +192,31 @@ public class TooltipHandler {
         }
     }
 
+    //#endregion
+
+    //#region 添加挖掘等级
+
     // 添加挖掘等级
-    private static void addMiningLevelInfo(ItemStack stack, List<Component> lines) {
+    private static void addMiningLevelTooltips(TipTargetInfo targetInfo, List<Component> lines) {
         if (!ModConfigCore.showHarvestLevel) return;
 
-        int harvestLevel = HarvestLevel.getHarvestLevel(stack);
+        int harvestLevel = HarvestLevel.getHarvestLevel(targetInfo.stack);
         if (harvestLevel > 0) {
             Component levelName = HarvestLevel.getHarvestLevelName(harvestLevel);
             lines.add(makeAttributeLine(AttributeType.HARVESTLEVEL, "tooltip.roberts_game_tweaks.harvest_level", levelName));
         }
     }
 
-    // 添加攻击信息
-    private static void addAttackInfo(ItemStack stack, List<Component> lines) {
-        if (!ModConfigCore.showTooltipsForWeapons) return;
+    //#endregion
 
-        AttackAttributes attackAttributes = AttackAttributes.LoadFromItemStack(stack);
+    //#region 添加武器信息
+
+    // 添加武器信息
+    private static void addWeaponsTooltips(TipTargetInfo targetInfo, List<Component> lines) {
+        if (!ModConfigCore.showTooltipsForWeapons) return;
+        if (CheckBlackList(targetInfo, ModConfigCore.weaponsTooltipsBlacklist)) return;
+
+        AttackAttributes attackAttributes = AttackAttributes.LoadFromItemStack(targetInfo.stack);
         if (attackAttributes.hasMainHandDamage)
             lines.add(makeAttributeLine(AttributeType.ATTACK, "tooltip.roberts_game_tweaks.attack", attackAttributes.formatMainHandDamage()));
         if (attackAttributes.hasMainHandAttackSpeed)
@@ -176,11 +232,16 @@ public class TooltipHandler {
             lines.add(makeAttributeLine(AttributeType.ATTACK, "tooltip.roberts_game_tweaks.attack_knockback_offhand", attackAttributes.formatOffHandAttackKnockback()));
     }
 
-    // 添加护甲信息
-    private static void addArmorInfo(ItemStack stack, List<Component> lines) {
-        if (!ModConfigCore.showTooltipsForArmors) return;
+    //#endregion
 
-        ArmorAttributes armorAttributes = ArmorAttributes.LoadFromItemStack(stack);
+    //#region 添加防具信息
+
+    // 添加防具信息
+    private static void addArmorsTooltips(TipTargetInfo targetInfo, List<Component> lines) {
+        if (!ModConfigCore.showTooltipsForArmors) return;
+        if (CheckBlackList(targetInfo, ModConfigCore.armorsTooltipsBlacklist)) return;
+
+        ArmorAttributes armorAttributes = ArmorAttributes.LoadFromItemStack(targetInfo.stack);
         if (armorAttributes.hasArmor)
             lines.add(makeAttributeLine(AttributeType.ARMOR, "tooltip.roberts_game_tweaks.armor", armorAttributes.formatArmor()));
         if (armorAttributes.hasArmorToughness && armorAttributes.armorToughness > 0)
@@ -189,11 +250,15 @@ public class TooltipHandler {
             lines.add(makeAttributeLine(AttributeType.ARMOR, "tooltip.roberts_game_tweaks.knockback_resistance", armorAttributes.formAtknockbackResistance()));
     }
 
+    //#endregion
+
+    //#region 添加食物信息
+    
     // 添加食物信息
-    private static void addFoodInfo(ItemStack stack, List<Component> lines) {
+    private static void addFoodTooltips(TipTargetInfo targetInfo, List<Component> lines) {
         if (!ModConfigCore.showAttributesForFoods && !ModConfigCore.showEffectsForFoods) return;
 
-        FoodAttributes foodAttributes = FoodAttributes.LoadFromItemStack(stack);
+        FoodAttributes foodAttributes = FoodAttributes.LoadFromItemStack(targetInfo.stack);
         if (foodAttributes.hasFoodProperties) {
             if (ModConfigCore.showAttributesForFoods) {
                 lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.restore_hunger", foodAttributes.formatHunger()));
@@ -204,6 +269,46 @@ public class TooltipHandler {
                     lines.add(effect.makeLine());
             }
         }
+    }
+
+    //#endregion
+
+    //#region 添加燃料的燃烧时间
+
+    // 添加燃料的燃烧时间
+    private static void addBurnTimeTooltips(TipTargetInfo targetInfo, List<Component> lines) {
+        if (!ModConfigCore.showBurnTimeForFuel) return;
+        
+        var burnTime = ForgeHooks.getBurnTime(targetInfo.stack, null);
+        if (burnTime > 0)
+            lines.add(makeAttributeLine(AttributeType.FOOD, "tooltip.roberts_game_tweaks.burn_time", RGTHelper.ticksToMMSS(burnTime)));
+    }
+
+    //#endregion
+
+    //#region 其他
+
+    /** 判断目标物品是否为黑名单物品 */
+    private static boolean CheckBlackList(TipTargetInfo targetInfo, String blacklist) {
+        var regid = targetInfo.getFullId();
+        var itemid = targetInfo.getItemId();
+        var modid = targetInfo.getModId();
+        var arr = blacklist.split(",");
+        for (String bitem : arr) {
+            var str = bitem.trim();
+            if (str.isEmpty()) continue;
+            if (str.startsWith("@")) {
+                // 判断ModID
+                if (str.substring(1).equals(modid))
+                    return true;
+            }
+            else {
+                // 判断完整Id或ItemID
+                if (str.equals(regid) || str.equals(itemid))
+                    return true;
+            }
+        }
+        return false;
     }
 
     private static ChatFormatting getAttributeTypeColor(AttributeType attributeType) {
@@ -217,6 +322,8 @@ public class TooltipHandler {
             case ARMOR:
                 return ChatFormatting.DARK_AQUA;
             case FOOD:
+                return ChatFormatting.GOLD;
+            case BURNTIME:
                 return ChatFormatting.GOLD;
             default:
                 return ChatFormatting.GRAY;
@@ -237,53 +344,14 @@ public class TooltipHandler {
         return makeAttributeLine(attributeType, nameKey, Component.literal(value).withStyle(color));
     }
 
-    // 移除原版属性相关提示
-    public static void removeVanillaTooltips(List<Component> tooltip) {
-        if (!ModConfigCore.removeVanillaTooltips) return;
-        Iterator<Component> iterator = tooltip.iterator();
-        while (iterator.hasNext()) {
-            Component line = iterator.next();
-            if (isVanillaTooltips(line)) {
-                iterator.remove();
-            }
-        }
-    }
-
-    // private static boolean isVanillaTooltips(Either<FormattedText, TooltipComponent> either) {
-    //     FormattedText text = either.left().get();
-    //     if (text instanceof Component component)
-    //         return isVanillaTooltips(component);
-    //     return false;
-    // }
-
-    private static boolean isVanillaTooltips(Component component) {
-        if (component.getContents() instanceof TranslatableContents translatable) {
-            String key = translatable.getKey();
-
-            if (HIDE_KEYS.contains(key))
-                return true;
-
-            Object[] args = translatable.getArgs();
-            for (Object object : args) {
-                if (object instanceof Component carg) {
-                    if (isVanillaTooltips(carg))
-                        return true;
-                }
-            }
-        }
-
-        for (Component sibling : component.getSiblings()) {
-            if (isVanillaTooltips(sibling))
-                return true;
-        }
-        return false;
-    }
-
     private static enum AttributeType {
         DURABILITY,
         HARVESTLEVEL,
         ATTACK,
         ARMOR,
-        FOOD
+        FOOD,
+        BURNTIME
     }
+
+    //#endregion
 }
