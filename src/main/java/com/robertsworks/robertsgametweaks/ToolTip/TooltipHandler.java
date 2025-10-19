@@ -299,7 +299,7 @@ public class TooltipHandler {
             if (str.isEmpty()) continue;
             if (str.startsWith("@")) {
                 // 判断ModID
-                if (str.substring(1) == modid)
+                if (str.substring(1).equals(modid))
                     return true;
             }
             else {
